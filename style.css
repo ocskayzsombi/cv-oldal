@@ -76,6 +76,7 @@ p { margin: 0 0 1em; }
 a { color: inherit; text-decoration: none; }
 ul, ol { margin: 0; padding: 0; list-style: none; }
 .mono { font-family: var(--font-mono); }
+[hidden] { display: none !important; }
 
 .container {
   width: 100%;

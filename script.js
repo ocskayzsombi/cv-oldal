@@ -6,25 +6,33 @@
    ⚙️  KAPCSOLATI ADATOK – ITT CSERÉLD KI A HELYŐRZŐKET!
    Minden link és az e-mail cím innen töltődik be az oldalra.
    --------------------------------------------------------------------- */
+// Ha valamelyik üres (""), az a sor nem jelenik meg az oldalon.
 const CONTACT = {
-  github:   "https://github.com/FELHASZNALONEV",
-  linkedin: "https://www.linkedin.com/in/FELHASZNALONEV",
-  email:    "sajat@email.cim",
+  github:   "https://github.com/ocskayzsombi",
+  linkedin: "", // pl. "https://www.linkedin.com/in/felhasznalonev"
+  email:    "zsombi.ocskay06@gmail.com",
 };
 
 /* ---------------------------------------------------------------------
    1. Kapcsolati linkek beállítása
    --------------------------------------------------------------------- */
 function setupContactLinks() {
-  document.getElementById("linkGithub").href = CONTACT.github;
-  document.getElementById("linkLinkedin").href = CONTACT.linkedin;
-  document.getElementById("linkEmail").href = "mailto:" + CONTACT.email;
-  document.getElementById("emailText").textContent = CONTACT.email;
-
   // A profilnév megjelenítése a link utolsó részéből (pl. ".../in/nev" -> "nev")
   const handle = (url) => url.replace(/\/+$/, "").split("/").pop();
-  document.getElementById("linkedinText").textContent = handle(CONTACT.linkedin);
-  document.getElementById("githubText").textContent = handle(CONTACT.github);
+
+  // Egy sor beállítása; ha nincs megadva érték, a sor elrejtődik
+  const setRow = (linkId, textId, href, text) => {
+    const link = document.getElementById(linkId);
+    if (!href) { link.hidden = true; return; }
+    link.href = href;
+    document.getElementById(textId).textContent = text;
+  };
+
+  setRow("linkEmail", "emailText", CONTACT.email && "mailto:" + CONTACT.email, CONTACT.email);
+  setRow("linkLinkedin", "linkedinText", CONTACT.linkedin, handle(CONTACT.linkedin));
+  setRow("linkGithub", "githubText", CONTACT.github, handle(CONTACT.github));
+
+  if (!CONTACT.email) document.getElementById("copyEmail").hidden = true;
 }
 
 /* ---------------------------------------------------------------------
