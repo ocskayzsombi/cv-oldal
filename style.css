@@ -1,0 +1,521 @@
+/* =====================================================================
+   Ocskay Zsombor Máté – CV oldal stíluslap
+   Szerkezet: 1. Változók (színek, betűk)  2. Alapok  3. Navigáció
+              4. Hero  5. Szekciók  6. Idővonal  7. Kártyák
+              8. Projektek  9. Kapcsolat  10. Lábléc  11. Animációk
+              12. Reszponzivitás
+   ===================================================================== */
+
+/* ---------- 1. VÁLTOZÓK – itt módosíthatod a színeket ---------- */
+:root {
+  /* Világos mód */
+  --bg:        #f7f5f0;
+  --bg-alt:    #efece4;
+  --surface:   #ffffff;
+  --text:      #14202e;
+  --text-soft: #4d5a68;
+  --muted:     #8a94a0;
+  --border:    #dcd7cb;
+  --accent:    #0f3d5e;   /* mély tengerészkék */
+  --accent-2:  #b08a3e;   /* visszafogott arany */
+  --positive:  #1f7a55;   /* "piaci" zöld */
+  --shadow:    0 1px 2px rgba(20, 32, 46, .04), 0 8px 24px rgba(20, 32, 46, .06);
+
+  --font-serif: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-sans:  "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono:  "JetBrains Mono", ui-monospace, Consolas, monospace;
+
+  --radius: 14px;
+  --maxw: 1120px;
+  --nav-h: 68px;
+}
+
+/* Sötét mód */
+:root[data-theme="dark"] {
+  --bg:        #0d141c;
+  --bg-alt:    #111a24;
+  --surface:   #16212d;
+  --text:      #e8ecf1;
+  --text-soft: #a9b4c0;
+  --muted:     #6f7c8a;
+  --border:    #243242;
+  --accent:    #7fb3d9;
+  --accent-2:  #d4b06a;
+  --positive:  #4cc38a;
+  --shadow:    0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
+}
+
+/* ---------- 2. ALAPOK ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-h) + 12px);
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color .3s ease, color .3s ease;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+p { margin: 0 0 1em; }
+a { color: inherit; text-decoration: none; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+.mono { font-family: var(--font-mono); }
+
+.container {
+  width: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ---------- 3. NAVIGÁCIÓ ---------- */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: var(--nav-h);
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid transparent;
+  transition: border-color .3s ease, background-color .3s ease;
+}
+.nav.is-scrolled { border-bottom-color: var(--border); }
+
+.nav__inner {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.nav__logo { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+.nav__logo-mark {
+  display: grid;
+  place-items: center;
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: var(--bg);
+  font-family: var(--font-serif);
+  font-size: 15px;
+}
+.nav__logo-text { font-size: 15px; }
+
+.nav__links { display: flex; gap: 28px; }
+.nav__links a {
+  position: relative;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-soft);
+  transition: color .2s;
+}
+.nav__links a::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -6px;
+  width: 100%; height: 2px;
+  background: var(--accent-2);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .25s ease;
+}
+.nav__links a:hover,
+.nav__links a.is-active { color: var(--text); }
+.nav__links a.is-active::after { transform: scaleX(1); }
+
+.nav__actions { display: flex; align-items: center; gap: 8px; }
+
+.theme-toggle,
+.nav__burger {
+  width: 40px; height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color .2s, transform .2s;
+}
+.theme-toggle:hover, .nav__burger:hover { border-color: var(--accent); }
+.theme-toggle svg {
+  width: 18px; height: 18px;
+  fill: none; stroke: currentColor; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.icon-sun { display: none; }
+:root[data-theme="dark"] .icon-sun { display: block; }
+:root[data-theme="dark"] .icon-moon { display: none; }
+
+.nav__burger { display: none; position: relative; }
+.nav__burger span {
+  position: absolute;
+  width: 18px; height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  transition: transform .25s;
+}
+.nav__burger span:first-child { transform: translateY(-4px); }
+.nav__burger span:last-child  { transform: translateY(4px); }
+.nav__burger.is-open span:first-child { transform: rotate(45deg); }
+.nav__burger.is-open span:last-child  { transform: rotate(-45deg); }
+
+/* ---------- 4. HERO ---------- */
+.hero {
+  padding: 56px 0 56px;
+  position: relative;
+  overflow: hidden;
+}
+/* Finom rácsminta a háttérben – "táblázat / grafikon" hangulat */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 48px 48px;
+  opacity: .35;
+  mask-image: radial-gradient(ellipse at 70% 40%, #000 10%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse at 70% 40%, #000 10%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero__grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--accent-2);
+  margin-bottom: 14px;
+}
+
+.hero__name {
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  margin-bottom: 10px;
+}
+.hero__title {
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: 18px;
+}
+.hero__title .sep { color: var(--muted); margin: 0 6px; }
+.hero__lead {
+  font-size: 1.05rem;
+  color: var(--text-soft);
+  max-width: 58ch;
+  margin-bottom: 0;
+}
+
+/* Kapcsolat kártya (a hero jobb oldalán) */
+.hero__card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+.contact-card__title {
+  font-size: 1.15rem;
+  margin-bottom: 8px;
+}
+
+.contact-row {
+  display: grid;
+  grid-template-columns: 20px auto 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  transition: color .2s;
+}
+.contact-row svg,
+.copy-email svg {
+  width: 18px; height: 18px;
+  fill: none; stroke: currentColor; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+  color: var(--accent);
+}
+.contact-row__label { font-weight: 500; font-size: 15px; }
+.contact-row__value {
+  min-width: 0;
+  text-align: right;
+  font-size: 13px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color .2s;
+}
+.contact-row:hover .contact-row__value,
+.contact-row:hover .contact-row__label { color: var(--accent); }
+
+.copy-email {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 13px;
+  color: var(--text-soft);
+  cursor: pointer;
+  transition: color .2s;
+}
+.copy-email svg { width: 15px; height: 15px; }
+.copy-email:hover { color: var(--accent-2); }
+
+/* ---------- 5. SZEKCIÓK ---------- */
+.section { padding: 56px 0; }
+.section--alt { background: var(--bg-alt); transition: background-color .3s ease; }
+
+.section__head {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.section__head h2 { font-size: clamp(1.6rem, 3.5vw, 2.3rem); }
+.section__num {
+  font-size: 14px;
+  color: var(--accent-2);
+  padding: 2px 8px;
+  border: 1px solid var(--accent-2);
+  border-radius: 6px;
+}
+.section__head--center { justify-content: center; }
+
+/* ---------- 6. IDŐVONAL ---------- */
+.timeline { position: relative; }
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 180px; top: 8px; bottom: 8px;
+  width: 1px;
+  background: var(--border);
+}
+.timeline__item {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 40px;
+  padding-bottom: 22px;
+  position: relative;
+}
+.timeline__item:last-child { padding-bottom: 0; }
+.timeline__item::before {
+  content: "";
+  position: absolute;
+  left: 175px; top: 8px;
+  width: 11px; height: 11px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--accent);
+}
+.timeline__date { font-size: 13px; color: var(--muted); padding-top: 3px; padding-right: 16px; }
+.timeline__body h3 { font-size: 1.3rem; margin-bottom: 4px; }
+.timeline__sub { color: var(--accent); font-weight: 500; margin-bottom: 8px; }
+.timeline__body p:last-child { color: var(--text-soft); margin-bottom: 0; }
+
+/* Címkék */
+.tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.tags li {
+  font-size: 13px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-soft);
+}
+.tags--small li { font-size: 12px; padding: 3px 10px; }
+
+/* ---------- 7. KÉSZSÉGEK (kompakt, soros elrendezés) ---------- */
+.skills {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0 24px;
+}
+.skills__row {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 24px;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+}
+.skills__row:last-child { border-bottom: 0; }
+
+.skills__label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+}
+.skills__icon {
+  flex: none;
+  width: 30px; height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent);
+}
+.skills__icon svg {
+  width: 16px; height: 16px;
+  fill: none; stroke: currentColor; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* Tag-en belüli halványabb megjegyzés (pl. "alapszint") */
+.tag-note { color: var(--muted); font-size: 12px; margin-left: 4px; }
+.tag-note::before { content: "· "; }
+
+/* Kis zászlók a nyelvekhez */
+.tags li:has(.flag) { display: inline-flex; align-items: center; gap: 7px; }
+.flag {
+  width: 18px; height: 12px;
+  flex: none;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px var(--border);
+}
+
+/* ---------- 8. PROJEKTEK ---------- */
+.projects {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+.project {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  overflow: hidden;
+  transition: transform .25s, border-color .25s, box-shadow .25s;
+}
+.project::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0;
+  width: 100%; height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+.project:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: var(--shadow); }
+.project__kind {
+  display: block;
+  font-size: 12px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--accent-2);
+  margin-bottom: 8px;
+}
+.project h3 { font-size: 1.35rem; margin-bottom: 8px; }
+.project p { color: var(--text-soft); margin-bottom: 14px; }
+
+/* ---------- 10. LÁBLÉC ---------- */
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 28px 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+.footer__inner { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.footer__top:hover { color: var(--text); }
+
+/* ---------- 11. ANIMÁCIÓK ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ---------- 12. RESZPONZIVITÁS ---------- */
+@media (max-width: 960px) {
+  .hero__grid { grid-template-columns: 1fr; gap: 32px; }
+  .hero__card { max-width: 480px; }
+}
+
+@media (max-width: 760px) {
+  :root { --nav-h: 60px; }
+  .container { padding: 0 16px; }
+
+  .nav__burger { display: grid; }
+  .nav__links {
+    position: absolute;
+    top: var(--nav-h); left: 0; right: 0;
+    flex-direction: column;
+    gap: 0;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 16px 16px;
+    transform: translateY(-8px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .2s, transform .2s, visibility .2s;
+  }
+  .nav__links.is-open { opacity: 1; transform: none; visibility: visible; }
+  .nav__links a { padding: 12px 0; font-size: 16px; border-bottom: 1px solid var(--border); }
+  .nav__links a:last-child { border-bottom: 0; }
+  .nav__links a::after { display: none; }
+  .nav__logo-text { display: none; }
+
+  .hero { padding: 36px 0 40px; }
+  .section { padding: 40px 0; }
+  .section__head { margin-bottom: 22px; }
+
+  .projects { grid-template-columns: 1fr; }
+
+  /* Készségek mobilon: a kategória a tagek fölé kerül */
+  .skills { padding: 0 16px; }
+  .skills__row { grid-template-columns: 1fr; gap: 10px; }
+
+  /* Idővonal mobilon: dátum a cím fölé kerül */
+  .timeline::before { left: 5px; }
+  .timeline__item { grid-template-columns: 1fr; gap: 6px; padding-left: 32px; }
+  .timeline__item::before { left: 0; }
+  .timeline__date { padding: 0; }
+
+  .project { padding: 24px; }
+}
